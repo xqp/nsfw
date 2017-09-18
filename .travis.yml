@@ -7,23 +7,32 @@ env:
 #branches:
 #  only:
 #    - master
+language: cpp
 
 git:
   depth: 10
 
-compiler: clang
+compiler:
+  - clang
+  - gcc
 
 before_install:
   - git clone https://github.com/creationix/nvm.git ./.nvm
   - source ./.nvm/nvm.sh
   - nvm install $NODE_VERSION
   - nvm use $NODE_VERSION
+  - mkdir cmake_build
+  - cd build
+  - cmake ..
+  - cd ..
 
 install:
   - npm install
 
 script:
   - npm test
+  - cd cmake_build
+  - make
 
 os:
 - linux
