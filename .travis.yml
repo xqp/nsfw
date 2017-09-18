@@ -14,7 +14,6 @@ git:
 
 compiler:
   - clang
-  - gcc
 
 before_install:
   - git clone https://github.com/creationix/nvm.git ./.nvm
@@ -22,7 +21,7 @@ before_install:
   - nvm install $NODE_VERSION
   - nvm use $NODE_VERSION
   - mkdir cmake_build
-  - cd build
+  - cd cmake_build
   - cmake ..
   - cd ..
 
