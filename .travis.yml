@@ -4,9 +4,9 @@ env:
     - export NODE_VERSION="6" CC=clang CXX=clang++ npm_config_clang=1
     - export NODE_VERSION="7" CC=clang CXX=clang++ npm_config_clang=1
 
-branches:
-  only:
-    - master
+#branches:
+#  only:
+#    - master
 
 git:
   depth: 10
