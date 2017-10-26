@@ -4,9 +4,9 @@ if (Test-Path -Path usr) {
 }
 New-Item -ItemType  Directory -Force -Path usr/local/lib
 New-Item -ItemType  Directory -Force -Path usr/local/include
-Copy-Item Binaries/x64/Release/* usr/local/lib/ -Force -Recurse
-Copy-Item Binaries/x64/Debug/*   usr/local/lib/ -Force -Recurse
-Copy-Item Release/include        usr/local/     -Force -Recurse
+Copy-Item build/src/Release/* usr/local/lib/ -Force -Recurse
+Copy-Item includes\ include\ -recurse
+Copy-Item include        usr/local/     -Force -Recurse
 
 # compress
 Compress-Archive -Path usr -DestinationPath nsfw.zip
