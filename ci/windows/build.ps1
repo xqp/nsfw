@@ -1,9 +1,9 @@
 # hack: map the curren path to drive X: because otherwise our paths become too long for windows
-Subst X: /D
-Subst X: .
-X:
+#Subst X: /D
+#Subst X: .
+#X:
 
-$error.clear()
+#$error.clear()
 
 . ${PSScriptRoot}\common.ps1
 # the script above should make sure that we are in the source root
