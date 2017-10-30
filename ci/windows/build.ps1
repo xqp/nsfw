@@ -1,24 +1,29 @@
-. ${PSScriptRoot}\common.ps1
+$SOURCE_DIR = Convert-Path .
+$BUILD_DIR = "$SOURCE_DIR\build"
+$INSTALL_DIR = "$SOURCE_DIR\install"
+$INSTALL_PREFIX = "usr/local"
 
-Initialize-VisualStudio
-
-mkdir build
-cd build
-
-cmake -G"Visual Studio 14 2015 Win64" ..
-
-msbuild nsfw.sln  /t:Rebuild `
-                  /p:Configuration=Release
-if ($LastExitCode -ne 0) {
-    exit 1
+if (-not (Test-Path $SOURCE_DIR/ci)) {
+    throw "must run inside repository root"
 }
 
-msbuild nsfw.sln /t:Rebuild  `
-                 /p:Configuration=Debug
-if ($LastExitCode -ne 0) {
-    exit 1
+if (Test-Path $BUILD_DIR) {
+    Remove-Item -Recurse -Force $BUILD_DIR
 }
 
-cd ..
+if (Test-Path $INSTALL_DIR) {
+    Remove-Item -Recurse -Force $INSTALL_DIR
+}
 
-exit 0
+New-Item -ItemType directory -Path $BUILD_DIR
+New-Item -ItemType directory -Path $INSTALL_DIR
+
+Set-Location -Path $BUILD_DIR
+
+cmake -G "Visual Studio 14 2015 Win64"                      `
+      -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR\$INSTALL_PREFIX" `
+      $SOURCE_DIR
+	  
+cmake --build . --target install
+
+Set-Location -Path $SOURCE_DIR
