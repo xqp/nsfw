@@ -1,8 +1,8 @@
 env:
   matrix:
-    - export NODE_VERSION="4" CC=clang CXX=clang++ npm_config_clang=1
-    - export NODE_VERSION="6" CC=clang CXX=clang++ npm_config_clang=1
-    - export NODE_VERSION="7" CC=clang CXX=clang++ npm_config_clang=1
+    - export NODE_VERSION="4" CC=clang-5.0 CXX=clang++-5.0 npm_config_clang=1
+    - export NODE_VERSION="6" CC=clang-5.0 CXX=clang++-5.0 npm_config_clang=1
+    - export NODE_VERSION="7" CC=clang-5.0 CXX=clang++-5.0 npm_config_clang=1
 
 branches:
 #  only:
@@ -10,6 +10,16 @@ branches:
 
 git:
   depth: 10
+
+compiler:
+  - clang
+
+addons:
+  apt:
+    sources:
+      - lvm-toolchain-trusty-5.0
+    packages:
+      - clang-5.0
 
 before_install:
   - git clone https://github.com/creationix/nvm.git ./.nvm
@@ -27,7 +37,8 @@ script:
   - ctest -VV
 
 os:
-- osx
+  - osx
+  - linux
 
 dist: trusty
 sudo: false
