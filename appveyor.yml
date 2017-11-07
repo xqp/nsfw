@@ -10,10 +10,6 @@ branches:
 #  only:
 #    - master
 
-configuration:
-  - Release
-  - Debug
-
 before_build:
     - mkdir cmake_build
     - cd cmake_build

@@ -11,7 +11,12 @@ branches:
 git:
   depth: 10
 
-compiler: clang
+addons:
+  apt:
+    sources:
+      - llvm-toolchain-trusty-5.0
+    packages:
+      - clang-5.0
 
 before_install:
   - git clone https://github.com/creationix/nvm.git ./.nvm
@@ -24,7 +29,7 @@ install:
 
 script:
   - npm test
-  - cmake .
+  - CXX=/usr/bin/clang++-5.0 CC=/usr/bin/clang-5.0 cmake .
   - cmake --build .
   - ctest -VV
 
@@ -32,4 +37,5 @@ os:
 - linux
 - osx
 
+dist: trusty
 sudo: false
