@@ -5,8 +5,8 @@ env:
     - export NODE_VERSION="7" CC=clang CXX=clang++ npm_config_clang=1
 
 branches:
-  only:
-    - master
+#  only:
+#    - master
 
 git:
   depth: 10
@@ -24,6 +24,9 @@ install:
 
 script:
   - npm test
+  - cmake .
+  - cmake --build .
+  - ctest -VV
 
 os:
 - linux

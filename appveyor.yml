@@ -7,8 +7,18 @@ environment:
     - nodejs_version: "7"
 
 branches:
-  only:
-    - master
+#  only:
+#    - master
+
+configuration:
+  - Release
+  - Debug
+
+before_build:
+    - mkdir cmake_build
+    - cd cmake_build
+    - cmake ..
+    - cd ..
 
 # Install scripts. (runs after repo cloning)
 install:
@@ -24,6 +34,10 @@ test_script:
   - npm --version
   # run tests
   - npm test
+  - cd cmake_build
+  - cmake --build .
+  - ctest -VV
+  - cd ..
 
 # Don't actually build.
 build: off
