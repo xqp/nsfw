@@ -10,18 +10,14 @@ environment:
 #  only:
 #    - master
 
-before_build:
-    - mkdir cmake_build
-    - cd cmake_build
-    - cmake ..
-    - cd ..
-
 # Install scripts. (runs after repo cloning)
 install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
   # install modules
   - npm install --msvs_version=2015
+  - cmake .
+  - cmake --build .
 
 # Post-install test scripts.
 test_script:
@@ -30,10 +26,7 @@ test_script:
   - npm --version
   # run tests
   - npm test
-  - cd cmake_build
-  - cmake --build .
   - ctest -VV
-  - cd ..
 
 # Don't actually build.
 build: off
