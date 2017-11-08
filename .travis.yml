@@ -4,10 +4,13 @@ env:
     - export NODE_VERSION="6"
     - export NODE_VERSION="7"
 
-include:
-  - os: linux
-  - os: osx
-    osx_image: xcode8
+  include:
+    - os: linux
+      compiler: gcc
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode8
 
 branches:
 #  only:
