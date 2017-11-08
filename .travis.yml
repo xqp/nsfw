@@ -1,17 +1,19 @@
 env:
-  matrix:
+  global:
     - export NODE_VERSION="4"
     - export NODE_VERSION="6"
     - export NODE_VERSION="7"
 
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      dist: trusty
+   
+    - os: osx
+      compiler: clang
+      osx_image: xcode8
 
-- os: linux
-  compiler: gcc
-  dist: trusty
-     
-- os: osx
-  compiler: clang
-  osx_image: xcode8
 
 branches:
 #  only:
