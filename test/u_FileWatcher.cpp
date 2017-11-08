@@ -6,9 +6,9 @@
 #include <limits.h>
 #include <string>
 
-static std::string programmName;
+static std::string programName;
 int main(int argc, char *argv[]) {
-  programmName = argv[0];
+  programName = argv[0];
   int result = Catch::Session().run(argc, argv);
 
   return (result < 0xff ? result : 0xff);
@@ -25,6 +25,12 @@ using namespace NSFW;
 static constexpr const char delimiter = '\\';
 #else
 static constexpr const char delimiter = '/';
+#endif
+
+#if defined(__APPLE__)
+static constexpr const int  grace_period_ms = 1000;
+#else
+static constexpr const int  grace_period_ms = 20;
 #endif
 
 static std::string getDirectoryFromFile(const std::string &path) {
@@ -74,10 +80,11 @@ private:
 TEST_CASE("test the file system watcher", "[FileSystemWatcher]") {
   std::vector<std::unique_ptr<AbstractTransform>> vec;
 
-  std::string tmpFilePath = std::tmpnam(nullptr);
-  std::string executionPath(getDirectoryFromFile(tmpFilePath));
-  TestFileSystemAdapter testWatcher(executionPath,
-                                    std::chrono::milliseconds(10));
+  std::string executionPath(getDirectoryFromFile(programName));
+  std::string testDir = executionPath + delimiter + "tmpdir_unittest";
+  REQUIRE(createDirectory(testDir));
+
+  TestFileSystemAdapter testWatcher(testDir, std::chrono::milliseconds(10));
   auto comparison = [](const Event &lhs, const Event &rhs) {
     return lhs.type == rhs.type && lhs.directory == rhs.directory &&
            lhs.fileA == rhs.fileA && lhs.fileB == rhs.fileB;
@@ -85,7 +92,8 @@ TEST_CASE("test the file system watcher", "[FileSystemWatcher]") {
 
   auto eventWasDetected = [comparison](TestFileSystemAdapter &testWatcher,
                                        const Event &expectedEvent) -> bool {
-    auto events = testWatcher.getEventsAfterWait(std::chrono::milliseconds(20));
+    auto events = testWatcher.getEventsAfterWait(
+                        std::chrono::milliseconds(grace_period_ms));
 
     bool foundEvent{false};
     for (auto &event : *events) {
@@ -98,19 +106,19 @@ TEST_CASE("test the file system watcher", "[FileSystemWatcher]") {
   };
 
   SECTION("check file creation") {
-    std::string filePath = std::tmpnam(nullptr);
+    std::string filePath = testDir + delimiter + "created_file";
     DummyFile fileHandle(filePath);
-    Event expectedEvent(EventType::CREATED, executionPath,
+    Event expectedEvent(EventType::CREATED, testDir,
                         getFileNameFromFile(filePath), "");
 
     REQUIRE(eventWasDetected(testWatcher, expectedEvent));
   }
 
   SECTION("check file modification") {
-    std::string filePath = std::tmpnam(nullptr);
+    std::string filePath = testDir + delimiter + "modified_file";
     std::string payload("payload");
     DummyFile fileHandle(filePath);
-    Event expectedEvent(EventType::MODIFIED, executionPath,
+    Event expectedEvent(EventType::MODIFIED, testDir,
                         getFileNameFromFile(filePath), "");
 
     // call this without expectations because a normal file creation s a
@@ -123,10 +131,10 @@ TEST_CASE("test the file system watcher", "[FileSystemWatcher]") {
   }
 
   SECTION("check file renaming") {
-    std::string filePath = std::tmpnam(nullptr);
-    std::string newFilePath = std::tmpnam(nullptr);
+    std::string filePath = testDir + delimiter + "old_file";
+    std::string newFilePath = testDir + delimiter + "new_file";
     DummyFile fileHandle(filePath);
-    Event expectedEvent(EventType::RENAMED, executionPath,
+    Event expectedEvent(EventType::RENAMED, testDir,
                         getFileNameFromFile(filePath),
                         getFileNameFromFile(newFilePath));
 
@@ -136,9 +144,9 @@ TEST_CASE("test the file system watcher", "[FileSystemWatcher]") {
   }
 
   SECTION("check file deletion") {
-    std::string filePath = std::tmpnam(nullptr);
+    std::string filePath = testDir + delimiter + "deleted_file";
     std::unique_ptr<DummyFile> fileHandle(new DummyFile(filePath));
-    Event expectedEvent(EventType::DELETED, executionPath,
+    Event expectedEvent(EventType::DELETED, testDir,
                         getFileNameFromFile(filePath), "");
 
     fileHandle.reset(nullptr);
