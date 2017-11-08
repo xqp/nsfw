@@ -3,19 +3,40 @@ matrix:
     - os: linux
       compiler: gcc
       dist: trusty
+      env: NODE_VERSION="4"
    
     - os: osx
       compiler: clang
       osx_image: xcode8
+      env: NODE_VERSION="4"
 
     - os: linux
-      env: NODE_VERSION="4"
+      compiler: gcc
+      dist: trusty
       env: NODE_VERSION="6"
+    - os: osx
+      compiler: clang
+      osx_image: xcode8
+      env: NODE_VERSION="6"
+
+    - os: linux
+      compiler: gcc
+      dist: trusty
       env: NODE_VERSION="7"
+    - os: osx
+      compiler: clang
+      osx_image: xcode8
+      env: NODE_VERSION="7"
+
+    - os: linux
+      compiler: gcc
+      dist: trusty
+      env: NODE_VERSION="8"
+    - os: osx
+      compiler: clang
+      osx_image: xcode8
       env: NODE_VERSION="8"
   
-
-
 branches:
 #  only:
 #    - master
