@@ -27,7 +27,7 @@ addons:
     packages: ['clang-3.9', 'g++-6']
 
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "linux"  ]; then sudo apt-get -qq update;    fi
+  - if [ "$TRAVIS_OS_NAME" = "linux"  ]; then sudo apt-get -qq update;      fi
   - git clone https://github.com/creationix/nvm.git ./.nvm
   - source ./.nvm/nvm.sh
   - nvm install $NODE_VERSION
@@ -38,8 +38,8 @@ install:
 
 before_script:
   - env
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="g++-6" CC="gcc-6" && cmake .;                                 fi
-  - if [ "$TRAVIS_OS_NAME" = "osx"   ]; then export CXX="clang++-3.9" CC="clang-3.9" npm_config_clang=1 && cmake .;    fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="g++-6" CC="gcc-6"; fi
+  - cmake .
 
 script:
   - npm test
