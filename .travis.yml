@@ -1,10 +1,11 @@
+sudo: required
+
 matrix:
   include:
     - os: linux
       compiler: gcc
       dist: trusty
       env: NODE_VERSION="4"
-   
     - os: osx
       compiler: clang
       osx_image: xcode8
@@ -68,5 +69,3 @@ script:
   - npm test
   - cmake --build .
   - ctest -VV
-
-sudo: false
