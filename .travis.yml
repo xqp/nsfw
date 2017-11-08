@@ -1,7 +1,8 @@
 env:
-  - export NODE_VERSION="4"
-  - export NODE_VERSION="6"
-  - export NODE_VERSION="7"
+  matrix:
+    - export NODE_VERSION="4"
+    - export NODE_VERSION="6"
+    - export NODE_VERSION="7"
 
   matrix:
     include:
