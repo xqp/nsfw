@@ -11,6 +11,9 @@ env:
     - compiler: clang
       env: COMPILER=clang++-3.9
 
+os:
+  - osx
+  - linux
 
 
 branches:
@@ -32,22 +35,18 @@ before_install:
   - nvm install $NODE_VERSION
   - nvm use $NODE_VERSION
 
-before_script:
-  - if [ "$COMPILER" = "g++-6"        ]; then export CXX="g++-6" CC="gcc-6";              fi
-  - if [ "$COMPILER" = "clang++-3.9"  ]; then export CXX="clang++-3.9" CC="clang-3.9" npm_config_clang=1;    fi
-
 install:
   - npm install
 
+before_script:
+  - if [ "$COMPILER" = "g++-6"        ]; then export CXX="g++-6" CC="gcc-6";                                 fi
+  - if [ "$COMPILER" = "clang++-3.9"  ]; then export CXX="clang++-3.9" CC="clang-3.9" npm_config_clang=1;    fi
+  - cmake .
+
 script:
   - npm test
-  - cmake .
   - cmake --build .
   - ctest -VV
-
-os:
-  - osx
-  - linux
 
 dist: trusty
 sudo: false
