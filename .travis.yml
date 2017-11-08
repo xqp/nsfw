@@ -1,16 +1,20 @@
-env:
-  matrix:
-    - export NODE_VERSION="4"
-    - export NODE_VERSION="6"
-    - export NODE_VERSION="7"
-
+matrix:
   include:
     - os: linux
       compiler: gcc
+      dist: trusty
+      env:
+        - export NODE_VERSION="4"
+        - export NODE_VERSION="6"
+        - export NODE_VERSION="7"
 
     - os: osx
       compiler: clang
       osx_image: xcode8
+      env:
+        - export NODE_VERSION="4"
+        - export NODE_VERSION="6"
+        - export NODE_VERSION="7"
 
 branches:
 #  only:
@@ -44,5 +48,4 @@ script:
   - cmake --build .
   - ctest -VV
 
-dist: trusty
 sudo: false
