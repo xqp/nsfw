@@ -23,7 +23,7 @@ using namespace NSFW;
 
 #if defined(_WIN32)
 static constexpr const char delimiter = '\\';
-#elif defined(__linux__)
+#else
 static constexpr const char delimiter = '/';
 #endif
 
@@ -84,7 +84,7 @@ TEST_CASE("test the file system watcher", "[FileSystemWatcher]") {
   };
 
   auto eventWasDetected = [comparison](TestFileSystemAdapter &testWatcher,
-                                        const Event &expectedEvent) -> bool {
+                                       const Event &expectedEvent) -> bool {
     auto events = testWatcher.getEventsAfterWait(std::chrono::milliseconds(20));
 
     bool foundEvent{false};
