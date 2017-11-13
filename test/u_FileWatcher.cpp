@@ -21,11 +21,13 @@ int main(int argc, char *argv[]) {
 
 using namespace NSFW;
 
+char getPathDelimiter(const std::string &path) {
 #if defined(_WIN32)
-static constexpr const char delimiter = '\\';
+    return path.find_first_of('/') != std::string::npos ? '/' : '\\';
 #else
-static constexpr const char delimiter = '/';
+    return '/';
 #endif
+}
 
 #if defined(__APPLE__)
 static constexpr const int  grace_period_ms = 1000;
@@ -34,11 +36,11 @@ static constexpr const int  grace_period_ms = 20;
 #endif
 
 static std::string getDirectoryFromFile(const std::string &path) {
-  return std::string(path.c_str(), path.find_last_of(delimiter));
+  return std::string(path.c_str(), path.find_last_of(getPathDelimiter(path)));
 }
 
 static std::string getFileNameFromFile(const std::string &path) {
-  auto firstCharFromFileName = path.find_last_of(delimiter) + 1;
+  auto firstCharFromFileName = path.find_last_of(getPathDelimiter(path)) + 1;
   return std::string(path.c_str() + firstCharFromFileName,
                      path.size() - firstCharFromFileName);
 }
@@ -81,6 +83,7 @@ TEST_CASE("test the file system watcher", "[FileSystemWatcher]") {
   std::vector<std::unique_ptr<AbstractTransform>> vec;
 
   std::string executionPath(getDirectoryFromFile(programName));
+  char delimiter = getPathDelimiter(executionPath);
   std::string testDir = executionPath + delimiter + "tmpdir_unittest";
   REQUIRE(createDirectory(testDir));
 

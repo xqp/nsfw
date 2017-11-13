@@ -3,6 +3,10 @@
 #include <iostream>
 
 #include <string>
+#if defined(_WIN32)
+#include <direct.h>
+#include <windows.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cerrno>
@@ -10,11 +14,11 @@
 bool createDirectory(const std::string &dir)
 {
   int nError = 0;
-  #if defined(_WIN32)
+#if defined(_WIN32)
     nError = _mkdir(dir.c_str());
-  #else
+#else
     nError = mkdir(dir.c_str(), 0733);
-  #endif
+#endif
   return nError == 0 || errno == EEXIST;
 }
 
